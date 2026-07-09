@@ -1,0 +1,21 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "_age",
+                "type": "uint8"
+            }
+        ],
+        "name": "checkEligibility",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    }
+]
