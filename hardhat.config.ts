@@ -25,8 +25,21 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 const {
   TESTNET_PRIVATE_KEY: testnetPrivateKey,
   MAINNET_PRIVATE_KEY: mainnetPrivateKey,
+  SEPOLIA_RPC_URL: sepoliaRpcUrl,
+  ETHERSCAN_API: etherscanApi,
 } = process.env;
 const reportGas = process.env.REPORT_GAS;
+
+const getAccounts = (privateKey: string | undefined): string[] => {
+  if (!privateKey) {
+    return [];
+  }
+  const cleanKey = privateKey.startsWith("0x") ? privateKey.slice(2) : privateKey;
+  if (cleanKey.length !== 64 || !/^[0-9a-fA-F]+$/.test(cleanKey)) {
+    return [];
+  }
+  return [privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`];
+};
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -37,15 +50,15 @@ const reportGas = process.env.REPORT_GAS;
 module.exports = {
   networks: {
     "sepolia": {
-      url: "https://eth-sepolia.public.blastapi.io",
+      url: sepoliaRpcUrl || "https://ethereum-sepolia-rpc.publicnode.com",
       chainId: 11155111,
-      accounts: [testnetPrivateKey],
+      accounts: getAccounts(testnetPrivateKey),
       timeout: 40000,
     },
     "ethereum": {
-      url: "https://eth-mainnet.public.blastapi.io",
+      url: "https://ethereum-rpc.publicnode.com",
       chainId: 1,
-      accounts: [mainnetPrivateKey],
+      accounts: getAccounts(mainnetPrivateKey),
       timeout: 60000,
     }
   },
@@ -81,7 +94,8 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      "mainnet": "",
+      mainnet: etherscanApi || "",
+      sepolia: etherscanApi || "",
     }
   },
   sourcify: {

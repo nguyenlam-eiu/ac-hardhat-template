@@ -1,20 +1,18 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployCounter: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre;
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
   console.log("====================");
-  console.log(hre.network.name);
+  console.log(`Deployed Network: ${hre.network.name}`);
   console.log("====================");
 
-  console.log("====================");
-  console.log("Deploy Counter Contract");
-  console.log("====================");
+  console.log("Deploying Counter with account:", deployer);
 
-  await deploy("Counter", {
+  const counter = await deploy("Counter", {
     contract: "Counter",
     args: [],
     from: deployer,
@@ -22,7 +20,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     autoMine: true,
     skipIfAlreadyDeployed: false,
   });
+
+  console.log(`Counter deployed successfully at address: ${counter.address}`);
 };
 
-func.tags = ["deploy"];
-export default func;
+deployCounter.tags = ["Counter", "deploy"];
+export default deployCounter;
